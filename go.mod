@@ -1,4 +1,4 @@
-module lynx
+module github.com/yuk228/lynx
 
 go 1.25.1
 

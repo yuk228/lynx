@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"lynx/commands"
+	"github.com/yuk228/lynx/commands"
 
 	"github.com/bwmarrin/discordgo"
 )

@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"lynx/commands"
-	"lynx/handler"
+	"github.com/yuk228/lynx/commands"
+	"github.com/yuk228/lynx/handler"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
