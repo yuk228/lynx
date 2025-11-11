@@ -5,47 +5,40 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/yuk228/lynx/commands"
-	"github.com/yuk228/lynx/handler"
-
-	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
+	"github.com/yuk228/lynx/bot"
+	_ "github.com/yuk228/lynx/config"
 )
 
-func loadEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatalf("Failed to load env file %v", err)
-	}
-	log.Println(".env loaded")
-}
-
 func main() {
-	loadEnv()
-
-	discord, err := discordgo.New("Bot " + os.Getenv("TOKEN"))
+	b, err := bot.New()
 	if err != nil {
-		log.Fatalf("Failed to login %v", err)
-	}
-	discord.Identify.Intents = discordgo.MakeIntent(discordgo.IntentsAll)
-	discord.AddHandler(handler.OnMessageCreate)
-	discord.AddHandler(handler.OnInteractionCreate)
-
-	err = discord.Open()
-	if err != nil {
-		log.Fatalf("Failed to start session %v", err)
+		log.Fatal(err)
 	}
 
-	err = commands.RegisterAll(discord, "")
+	err = b.Setup()
+
 	if err != nil {
-		log.Printf("Warning: Some commands may not have been registered: %v", err)
+		log.Fatal(err)
 	}
 
-	log.Println("Bot is running")
-	defer discord.Close()
+	err = b.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer b.Close()
 
-	stopBot := make(chan os.Signal, 1)
-	signal.Notify(stopBot, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
-	<-stopBot
+	stchan := make(chan os.Signal, 1)
+	signal.Notify(stchan, syscall.SIGTERM, os.Interrupt, syscall.SIGSEGV)
+
+end:
+	for {
+		select {
+		case <-stchan:
+			break end
+		default:
+		}
+		time.Sleep(time.Second)
+	}
 }
