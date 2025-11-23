@@ -8,13 +8,17 @@ import (
 	dotenv "github.com/joho/godotenv"
 )
 
+var (
+	BotToken    string
+	VoiceBoxURL string
+)
+
 func init() {
 	err := dotenv.Load()
 	if err != nil {
 		log.Fatal(fmt.Errorf("cannot load .env: %w", err))
 	}
-}
 
-func GetBotToken() string {
-	return os.Getenv("TOKEN")
+	BotToken = os.Getenv("TOKEN")
+	VoiceBoxURL = os.Getenv("VOICEBOX_URL")
 }

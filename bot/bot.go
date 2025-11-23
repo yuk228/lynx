@@ -15,7 +15,7 @@ type Bot struct {
 }
 
 func New() (*Bot, error) {
-	bot, err := disgolf.New(config.GetBotToken())
+	bot, err := disgolf.New(config.BotToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create bot: %w", err)
 	}
@@ -52,8 +52,6 @@ func (b *Bot) Start() error {
 	return nil
 }
 
-
 func (b *Bot) Close() error {
 	return b.Instance.Close()
 }
-
