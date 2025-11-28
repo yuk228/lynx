@@ -1,5 +1,4 @@
-FROM golang:1.25-alpine
-
+FROM golang:1.25-alpine AS builder
 WORKDIR /app
 
 COPY go.mod go.sum ./
@@ -9,4 +8,11 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/start ./main.go
 
-CMD ["/app/start"]
+FROM gcr.io/distroless/base-debian12
+WORKDIR /app
+
+USER 65532
+
+COPY --from=builder /app/start .
+
+ENTRYPOINT ["./start"]
